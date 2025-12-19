@@ -5,10 +5,9 @@
 
 extern int16_t rotary_position;
 
-extern RotaryEncoder encoder;
+extern RotaryEncoder *encoder;
 
 void ICACHE_RAM_ATTR encoderISR();
-void ICACHE_RAM_ATTR encoderButtonISR();
 
 void encoder_setup();
 void encoder_loop();

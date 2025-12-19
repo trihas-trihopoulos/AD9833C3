@@ -11,6 +11,8 @@
 #include <Adafruit_SSD1306.h>
 
 #include <RotaryEncoder.h>          // Libray handling the rotary encoder + switch
+#include <MD_AD9833.h>              // AD9833 library
+#include "MCP_POT_mod.h"            // Modified MCP_POT library
 
 // ---------------------------------------------
 // Serial and Wire (I2C)
@@ -44,6 +46,14 @@
 #define ROTARY_PIN_B   1        //ky-040 dt  pin,             add 100nF/0.1uF capacitors between pin & ground!!!
 #define ROTARY_BUTTON  2        //ky-040 sw  pin, interrupt & add 100nF/0.1uF capacitors between pin & ground!!!
 
+// ----------------------------------------------
+// AD9833 functions
+const uint8_t AD9833_FSYNC  = 3;     // Load pin - FSYNC
+const uint8_t AD9833_DATA   = 6;     // DATA
+const uint8_t AD9833_CLK    = 7;     // CLK
+
+const uint8_t MCP41010_CS   = 10;    // Load pin
+// ------------
 // ------------
 // My files
 #include "global.h"

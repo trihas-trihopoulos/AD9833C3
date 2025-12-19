@@ -1,39 +1,80 @@
 #include "AD9833C3.h"
 //------------------------------
 
-int16_t rotary_position = 0;
+// Define some constants.
 
-RotaryEncoder encoder(ROTARY_PIN_A, ROTARY_PIN_B, ROTARY_BUTTON);
+// the maximum acceleration is 10 times.
+constexpr float m = 10;
+
+// at 200ms or slower, there should be no acceleration. (factor 1)
+constexpr float longCutoff = 50;
+
+// at 5 ms, we want to have maximum acceleration (factor m)
+constexpr float shortCutoff = 5;
+
+// To derive the calc. constants, compute as follows:
+// On an x(ms) - y(factor) plane resolve a linear formular factor(ms) = a * ms + b;
+// where  f(4)=10 and f(200)=1
+
+constexpr float a = (m - 1) / (shortCutoff - longCutoff);
+constexpr float b = 1 - longCutoff * a;
+
+// a global variables to hold the last position
+static int lastPos = 0;
+
+// =================================
+RotaryEncoder *encoder = nullptr;
 
 // ---------------
 void ICACHE_RAM_ATTR encoderISR()                                            //interrupt service routines need to be in ram
 {
-  encoder.readAB();
-}
-// ---------------
-void ICACHE_RAM_ATTR encoderButtonISR()
-{
-  encoder.readPushButton();
+  encoder->tick(); // just call tick() to check the state.
 }
 
 // ---------------
 void encoder_setup()
 {
-  encoder.begin();                                                           //set encoders pins as input & enable built-in pullup resistors
-
-  attachInterrupt(digitalPinToInterrupt(ROTARY_PIN_A),  encoderISR,       CHANGE);  //call encoderISR()       every high->low or low->high changes
-  attachInterrupt(digitalPinToInterrupt(ROTARY_BUTTON), encoderButtonISR, FALLING); //call encoderButtonISR() every high->low              changes
-
-  Serial.begin(115200);
+  encoder = new RotaryEncoder(ROTARY_PIN_A, ROTARY_PIN_B, RotaryEncoder::LatchMode::FOUR3);                                                           //set encoders pins as input & enable built-in pullup resistors
+  attachInterrupt(digitalPinToInterrupt(ROTARY_PIN_A), encoderISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ROTARY_PIN_B), encoderISR, CHANGE);
 }
+
 // ---------------
 void encoder_loop()
 {
-  if (rotary_position != encoder.getPosition())
-  {
-    rotary_position = encoder.getPosition();
-    Serial.println(rotary_position);
-  }
-  
-  if (encoder.getPushButton() == true) Serial.println(F("PRESSED"));         //(F()) saves string to flash & keeps dynamic memory free
+  encoder->tick();
+
+  int newPos = encoder->getPosition();
+  if (lastPos != newPos) {
+
+    // accelerate when there was a previous rotation in the same direction.
+
+    unsigned long ms = encoder->getMillisBetweenRotations();
+
+    if (ms < longCutoff) {
+      // do some acceleration using factors a and b
+
+      // limit to maximum acceleration
+      if (ms < shortCutoff) {
+        ms = shortCutoff;
+      }
+
+      float ticksActual_float = a * ms + b;
+      Serial.print("  f= ");
+      Serial.println(ticksActual_float);
+
+      long deltaTicks = (long)ticksActual_float * (newPos - lastPos);
+      Serial.print("  d= ");
+      Serial.println(deltaTicks);
+
+      newPos = newPos + deltaTicks;
+      encoder->setPosition(newPos);
+    }
+
+    Serial.print(newPos);
+    Serial.print("  ms: ");
+    Serial.println(ms);
+    lastPos = newPos;
+  } // if
+
 }

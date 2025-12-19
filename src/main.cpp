@@ -3,6 +3,11 @@
 #include "AD9833C3.h"
 
 // ---------------------------------------------
+uint8_t pot_value = 0;
+uint64_t pot_update_timer=0;
+// ---------------------------------------------
+
+
 
 void setup() 
 {
@@ -26,13 +31,25 @@ void setup()
 
     // Initialise encoder switch
     encoder_setup();
+
+// Initialise pot
+    mcp41010_pot.begin();
+
+    // Initialise AD9833
+    AD.begin();
+    AD.setMode(MD_AD9833::MODE_TRIANGLE);
+    Serial.println("Should be in triangle mode, testing graphics");
+    // Test that display is still reachable
+    testscrolltext();
+    
+    pot_update_timer=millis();
+
 }
 // ---------------------------------------------
+ulong last_printout_mills =0;
+u16_t previous_rotary_value =0;
 
 void loop() 
 {
-  // sleep(5);
-  // Serial.println("5secs passed");
   encoder_loop();
-  sleep(1);
 }
