@@ -24,7 +24,7 @@ static const unsigned char PROGMEM logo_bmp[] =
 // -------------------------
 void graphics_setup() 
 {
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   // Wait for display
   delay(500);
@@ -49,6 +49,7 @@ void graphics_setup()
   // Show the display buffer on the screen. You MUST call display() after
   // drawing commands to make them visible on screen!
   display.display();
+/* kkk
   delay(2000);
   // display.display() is NOT necessary after every single drawing command,
   // unless that's what you want...rather, you can batch up a bunch of
@@ -76,6 +77,7 @@ void graphics_setup()
   delay(1000);
 
   testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
+  kk */
 }
 
 // -------------------------

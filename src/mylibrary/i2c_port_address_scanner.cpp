@@ -5,7 +5,7 @@
 * D8 throws exceptions thus it has been left out
 *
 */
-#include "AD9833C3.h"
+#include "../AD9833C3.h"
 
 // ---------------------------------------------
 void check_if_exist_I2C() 

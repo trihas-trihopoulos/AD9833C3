@@ -7,20 +7,47 @@
 #include <Wire.h>
 #include <SPI.h>
 
+// -------------------
+#include <time.h>                       // time() ctime()
+#include <sys/time.h>                   // struct timeval
+#include <FS.h>                   // File System Library
+#include <LittleFS.h>             // SPI Flash System Library
+
+
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#include <RotaryEncoder.h>          // Libray handling the rotary encoder + switch
+#include <ezButton.h>
 #include <MD_AD9833.h>              // AD9833 library
 #include "MCP_POT_mod.h"            // Modified MCP_POT library
+
+#include <ArduinoJson.h>          // https://github.com/bblanchon/ArduinoJson
+#include <ESPAsyncWebServer.h>
+#include <ESPAsyncWiFiManager.h>         //https://github.com/tzapu/WiFiManager
+// #include "mylibrary/ESPAsyncHTTPUpdateServer.h"  
+#include "fauxmoESP.h"
+#include <ESPmDNS.h>
+
+// -------------------
+// Debugging 
+#define AD9833C3_DEBUG              // Enables serial port printing of debugging info
+#define LOOP_PERFORMANCE_DEBUB          // Prints debug info
+
+// Enable serial port debug printouts
+#ifdef AD9833C3_DEBUG
+  #define DEBUG_PRINT(x) Serial.print(x)
+  #define DEBUG_PRINTLN(x) Serial.println(x)
+  #define DEBUG_PRINTF(x...) Serial.printf(x)
+#else
+  #define DEBUG_PRINT(x)
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_PRINTF(x)
+#endif // AD9833C3_DEBUG
 
 // ---------------------------------------------
 // Serial and Wire (I2C)
 #define SERIAL_BAUDRATE                 115200
 #define LED                             8
-#define SDA_PIN     8
-#define SCL_PIN     9
-
 // ----------------------------------------------
 // Adafruit screen & graphics
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -28,9 +55,9 @@
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 // The pins for I2C are defined by the Wire-library. 
-// On an arduino UNO:       A4(SDA), A5(SCL)
-// On an arduino MEGA 2560: 20(SDA), 21(SCL)
-// On an arduino LEONARDO:   2(SDA),  3(SCL), ...
+#define SDA_PIN     8
+#define SCL_PIN     9
+
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 //
@@ -56,10 +83,22 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 // ------------
 // ------------
 // My files
-#include "global.h"
-#include "i2c_port_address_scanner.h"
+#include "mylibrary/esp32c3_filesystem.h"
+#include "AD9833_functions.h"
+#include "mylibrary/wifi_functions.h"
+#include "mylibrary/ESPAsyncHTTPUpdateServer.h"
+#include "mylibrary/i2c_port_address_scanner.h"
 #include "graphics_functions.h"
-#include "rotary_encoder_functions.h"
+#include "button_functions.h"
+#include "webserver_functions.h"
+#include "webSocketObject.h"
+#include "various_functions.h"
+#include "alexa_functions.h"
+// Filesystem
+#define FORMAT_LittleFS_IF_FAILED true
+#include "configurationObject.h"
 
+// Include global varibales
+#include "global.h"
 // ---------------------------------------------
 #endif //AD9833C3_H
