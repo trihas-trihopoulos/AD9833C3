@@ -65,10 +65,12 @@ void setup()
     }
   
     // WiFi is active so...    
-    mdns_setup();           // Setup mDNS
-    serverSetup();          // Web and update server setup 
+    mdns_setup();                                   // Setup mDNS
+    serverSetup();                                  // Web and update server setup 
     
-    fauxmo_setup();         // Alexa setup
+    fauxmo_setup();                                 // Alexa setup
+
+    InitialiseWorkingParameters();                  // Initialise working parameters
 
     // =================================================
     // TEST CODE
@@ -97,54 +99,5 @@ void loop()
 {
     int i = 0;
     joystick_switches_loop();
-  
-    if (freq > 500000)
-        freq= 10000;
-        
-    md = MD_AD9833::MODE_SINE;
-    print_signal_generator_parameters();
-    for (i =0; i<256;i++)
-    {
-        AD9833_phase = ph;
-        AD9833_frequency = freq * (i%10);
-        AD9833_mode = md;
-        MCP41010_value = pot+i;
-        set_signal_generator_parameters();
-        delay(50);
-    }
-
-    delay(1000);
-
-    md = MD_AD9833::MODE_SQUARE1;
-    if (freq > 500000)
-        freq= 10000;
-
-    print_signal_generator_parameters();
-    for (i =0; i<256;i++)
-    {
-        AD9833_phase = ph;
-        AD9833_frequency = freq * (i%10);
-        AD9833_mode = md;
-        MCP41010_value = pot+i;
-        set_signal_generator_parameters();
-        delay(50);
-    }
-
-    // ----
-    md = MD_AD9833::MODE_TRIANGLE;
-    if (freq > 500000)
-        freq= 10000;
-
-    print_signal_generator_parameters();
-    for (i =0; i<256;i++)
-    {
-        AD9833_phase = ph;
-        AD9833_frequency = freq * (i%10);
-        AD9833_mode = md;
-        MCP41010_value = pot+i;
-        set_signal_generator_parameters();
-        delay(50);
-    }
-   delay(1000); 
-
+ 
 }

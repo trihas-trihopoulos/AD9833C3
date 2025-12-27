@@ -4,11 +4,6 @@
 char wm_p_host[20]="ad9833c3";
 char wm_p_port[6] ="8080";
 
-char sant1[25]="antenna 1";
-char sant2[25]="antenna 2";
-char sant3[25]="antenna 3";
-char sant4[25]="antenna 4";
-
 // ------------------
 void mdns_setup()
 {
@@ -68,10 +63,10 @@ bool wifiStartClean(AsyncWiFiManager *wm)
   AsyncWiFiManagerParameter custom_port("port", "Web server port", "80", 6);
   wm->addParameter(&custom_port);
 
-  AsyncWiFiManagerParameter custom_mode("mode", "Waveform mode", "0:Sin,1:Tr,2:Sq", 25);
+  AsyncWiFiManagerParameter custom_mode("mode", "Waveform mode", "0", 25);
   wm->addParameter(&custom_mode);
 
-  AsyncWiFiManagerParameter custom_freq("freq", "Start frequency", "100000", 25);
+  AsyncWiFiManagerParameter custom_freq("freq", "Start frequency", "1000", 25);
   wm->addParameter(&custom_freq);
 
 

@@ -1,15 +1,17 @@
 #include "AD9833C3.h"
 // --------------------------------
-StaticJsonDocument<128> txJsonBuffer;
-StaticJsonDocument<128> rxJsonBuffer;
+StaticJsonDocument<512> txJsonBuffer;
+StaticJsonDocument<512> rxJsonBuffer;
 
 // -----------------------------------------
 void hexdump(const void *mem, uint32_t len, uint8_t cols) 
 {
 	const uint8_t* src = (const uint8_t*) mem;
 	Serial.printf("\n[HEXDUMP] Address: 0x%08X len: 0x%X (%d)", (ptrdiff_t)src, len, len);
-	for(uint32_t i = 0; i < len; i++) {
-		if(i % cols == 0) {
+	for(uint32_t i = 0; i < len; i++) 
+  {
+		if(i % cols == 0) 
+    {
 			Serial.printf("\n[0x%08X] 0x%08X: ", (ptrdiff_t)src, i);
 		}
 		Serial.printf("%02X ", *src);
@@ -22,11 +24,22 @@ void prepareDataForJSONTransmission()
 {
   String outputString;
   txJsonBuffer.clear();   // Clear the json document 
-/*
-  // fill status and measurements
-  txJsonBuffer["channel"]        = rf_channel;
-  txJsonBuffer["enable"]         = rf_enable;
-*/
+
+  txJsonBuffer["cmd"]           =  workingParameters.command;                               // 1 - reports the AD9833 parameters only
+  txJsonBuffer["ADfreq"]        =  workingParameters.AD9833_frequency;                      // One kHz
+  txJsonBuffer["ADmode"]        =  workingParameters.AD9833_mode;                           // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE
+  txJsonBuffer["ADphas"]        =  workingParameters.AD9833_phase;                          // Phase setting in degrees [0..3600]
+  txJsonBuffer["MCPval"]        =  workingParameters.MCP41010_value;                        // MCP41010 digital potentiometer value [0-255]
+  txJsonBuffer["stFreq"]        =  workingParameters.startfrequency;                        // Frequency sweep
+  txJsonBuffer["enFreq"]        =  workingParameters.endfrequency;
+  txJsonBuffer["stFreq"]        =  workingParameters.stepfrequency;
+  txJsonBuffer["fstTim"]        =  workingParameters.frequencystepTime;                     // in millisecondes
+  txJsonBuffer["stAmpl"]        =  workingParameters.startAmplitude;                        // Frequency sweep
+  txJsonBuffer["stpAmp"]        =  workingParameters.stopAmplitude;
+  txJsonBuffer["stepAm"]        =  workingParameters.stepAmplitude;
+  txJsonBuffer["aStpTm"]        =  workingParameters.amplitudeStepTime;                     // in millisecondes
+  txJsonBuffer["swMode"]        =  workingParameters.sweepMode=0;                           // 0 - no sweep, 1 - frequency sweep, 2 - Amplitude seep, 3 - both Frequency and Amplitude (inner loop:amplitude)
+
   // Print what is going to be sent
   DEBUG_PRINT("prepareDataForJSONTransmission:");
   serializeJsonPretty(txJsonBuffer, Serial);    // Send serial data to the serial port
@@ -34,35 +47,13 @@ void prepareDataForJSONTransmission()
   serializeJson(txJsonBuffer, outputString);
   ws.textAll(outputString);   // Send the response to all clients
 }
-// ------------------------
-// Updates variables from data in rxJsonBuffer json buffer  
-void updateDataFromReceivedJson()
-{
-  int channel   = rxJsonBuffer["channel"];
-  int enable    = rxJsonBuffer["enable"];
-
-  DEBUG_PRINT("updateDataFromReceivedJson:");
-  serializeJsonPretty(rxJsonBuffer, Serial);    // Send serial data to the serial port
-  DEBUG_PRINTLN("---\n");
-/*
-  // toggle values
-  if (channel == 1)
-    switch_tv_signal();
-  else
-    disable_tv_signal();
-*/
-  prepareDataForJSONTransmission();                 // update all clients
-  // client->text(response);
-}
 // ---------------------------
 // Parses received data
 void receiveDataWs(AsyncWebSocketClient * client, String request)
 {
-  DEBUG_PRINTLN("receiveDataWs:\n");
+  DEBUG_PRINTLN("receiveDataWs:");
   DEBUG_PRINTLN(request);
-  DEBUG_PRINTLN("\n---\n");
-
-
+  
   rxJsonBuffer.clear();   // Clear the json document 
   DeserializationError error = deserializeJson(rxJsonBuffer, request);
 
@@ -75,7 +66,20 @@ void receiveDataWs(AsyncWebSocketClient * client, String request)
   }
   else
   {
-    updateDataFromReceivedJson(); //Update variables
+    // -----------------------
+    // Start parsing by first grabbing the command
+    int command = rxJsonBuffer["cmd"];
+    switch (command)
+    {
+      case  JSON_COMMAND_SEND_UPDATE:
+        prepareDataForJSONTransmission();               // Send current parameters to browser
+        break;
+      case  JSON_COMMAND_BASIC_PARAMETERS:
+        updateBasicParametersFromReceivedJson();               // Send current parameters to browser
+        break;
+
+    }
+
   }
   // ++++++++++++++++++++=
   // String response = String(millis(), DEC);
@@ -164,3 +168,98 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
   }
 }
 
+// ==========================================================================
+// Intialise the working parameters structure - also passed over websocket interface
+void InitialiseWorkingParameters()
+{
+    workingParameters.command = 0;                          // 1 - reports the AD9833 parameters only
+
+    workingParameters.AD9833_frequency=1000;                // One kHz
+    workingParameters.AD9833_mode= MD_AD9833::MODE_OFF;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE
+    workingParameters.AD9833_phase=0;                       // Phase setting in degrees [0..3600]
+    workingParameters.MCP41010_value=0;                     // MCP41010 digital potentiometer value [0-255]
+
+    workingParameters.startfrequency=1000;                  // Frequency sweep
+    workingParameters.endfrequency=10000;
+    workingParameters.stepfrequency=100;
+    workingParameters.frequencystepTime=100;                // in millisecondes
+
+    workingParameters.startAmplitude=0;                     // Frequency sweep
+    workingParameters.stopAmplitude=255;
+    workingParameters.stepAmplitude=5;
+    workingParameters.amplitudeStepTime=10;                 // in millisecondes
+    workingParameters.sweepMode=0;                          // 0 - no sweep, 1 - frequency sweep, 2 - Amplitude seep, 3 - both Frequency and Amplitude (inner loop:amplitude)
+}
+// ------------------------
+// Updates variables from data in rxJsonBuffer json buffer  
+void updateBasicParametersFromReceivedJson()
+{
+  int mode = rxJsonBuffer["ADmode"];;
+
+  switch (mode)
+  {
+  case 0:
+    workingParameters.AD9833_mode         = MD_AD9833::MODE_OFF;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
+    break;
+  case 1:
+    workingParameters.AD9833_mode         = MD_AD9833::MODE_SINE;    // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
+    break;
+  case 2:
+    workingParameters.AD9833_mode         = MD_AD9833::MODE_TRIANGLE; // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
+    break;
+  case 3:
+    workingParameters.AD9833_mode         = MD_AD9833::MODE_SQUARE1;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
+    break;
+  case 4:
+    workingParameters.AD9833_mode         = MD_AD9833::MODE_SQUARE2;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
+    break;
+  default:
+    workingParameters.AD9833_mode         = MD_AD9833::MODE_OFF;
+    break;
+  }
+
+  workingParameters.command             = rxJsonBuffer["cmd"];
+  workingParameters.AD9833_frequency    = atof(rxJsonBuffer["ADfreq"]);
+ 
+  workingParameters.AD9833_phase        = atoi(rxJsonBuffer["ADphas"]);
+  workingParameters.MCP41010_value      = atoi(rxJsonBuffer["MCPval"]);
+
+  AD9833_phase        = workingParameters.AD9833_phase;
+  AD9833_frequency    = workingParameters.AD9833_frequency;
+  AD9833_mode         = (MD_AD9833::mode_t) workingParameters.AD9833_mode;
+  MCP41010_value      = workingParameters.AD9833_phase;
+  set_signal_generator_parameters();
+  print_signal_generator_parameters();
+
+  DEBUG_PRINT("updateBasicParametersFromReceivedJson:");
+  prepareDataForJSONTransmission();
+
+/*
+  // toggle values
+  if (channel == 1)
+    switch_tv_signal();
+  else
+    disable_tv_signal();
+
+  prepareDataForJSONTransmission();                 // update all clients
+  // client->text(response);
+*/
+}
+
+
+/*
+"cmd"  
+"ADfreq"
+"ADmode"
+"ADphas"
+"MCPval"
+"stFreq"
+"enFreq"
+"stFreq"
+"fstTim"
+"stAmpl"
+"stpAmp"
+"stepAm"
+"aStpTm"
+"swMode"
+*/

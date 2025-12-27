@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+   <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+	<meta name="description" content="">
+	<meta name="author" content="Kostas">
+	<title>AD9833 signal generator</title>
+	<meta name="description" content="">
+
+
+  
+<style>
+body {font-family: Arial;}
+
+* {
+  box-sizing: border-box;
+}
+
+.responsive-form {
+  max-width: 600px;
+  width: 100%;
+  border-radius: 4px;
+  border: 2px solid #04AA6D;;
+  background-color:  #f2f2f2;
+  padding: 20px;
+}
+
+.responsive-form-buttons {
+  max-width: 300px;
+  width: 60%;
+  border-radius: 8px;
+  border: 2px solid #1504aa;;
+  background-color:  #b5bba8;
+  padding: 20px;
+}
+
+
+label {
+  min-width: 48%;
+  margin-bottom: 10px;
+}
+
+input[type=text], select {
+  min-width: 15%;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.submit_button {
+  width: 100%;
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  label,
+  input[type=text],
+  input[type=submit],
+  select, textarea {
+    flex: 100%;
+    min-width: 100%;
+  }
+}
+
+.div_buttons {
+  width: 200px;
+  height: 130px;
+  padding: 5px;
+  background-color: rgb(238, 240, 252);
+  box-shadow: 10px 10px 5px rgb(160, 160, 132);
+}
+
+h1 {
+  text-align: center;
+  text-transform: uppercase;
+  color: #b40202;
+}
+
+.button {
+  position: relative;
+  background-color: #2555f3;
+  border: none;
+  font-size: 24px;
+  color: #FFFFFF;
+  padding: 20px;
+  width: 450px;
+  text-align: center;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.button:after {
+  content: "";
+  background: #f1f1f1;
+  display: block;
+  position: absolute;	
+  padding-top: 300%;
+  padding-left: 350%;
+  margin-left: -20px;
+  margin-top: -120%;
+  opacity: 0;
+  transition: all 0.8s
+}
+
+.button:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  transition: 0s
+}
+
+.button:hover span {
+  padding-right: 100px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  width: 400px;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  -webkit-animation: fadeEffect 1s;
+  animation: fadeEffect 1s;
+  width: 500px;
+  height: 450px;
+  padding: 25px;
+  background-color: #fefffa;
+  box-shadow: 10px 10px 5px lightblue;
+
+}
+
+/* Fade in tabs */
+@-webkit-keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+</style>
+
+<body>
+
+
+<h2>AD9833 12MHz Signal Generator</h2>
+
+<div class="tab" style="width:500px; height:60px">
+  <button id="tbParameters" class="tablinks" onclick="openMyTab(event, 'tSgGen')">Parameters</button>
+  <button class="tablinks" onclick="openMyTab(event, 'tfrSweep')">Freq.Sweep</button>
+  <button class="tablinks" onclick="openMyTab(event, 'tAmplsweep')">Ampl.Sweep</button>
+  <button class="tablinks" onclick="openMyTab(event, 'tabInfo')">Info</button>
+</div>
+
+<div id="tSgGen" class="tabcontent">
+  <p>Resize the screen to see the form layout change!</p>
+
+  <div class="responsive-form">
+
+      <label for="lfreq">Frequency (12MHz max):</label>
+      <input type="number" id="fr" name="frequency" input size="11" maxlength='11' min="10" max="12000000" value='00000000.00' required placeholder="" >
+      <br>
+      <label for="lampl">Amplitude (0-255):</label>
+      <input type="number" input maxlength='3'  min="0" max="255" value='000' id="lampl" name="amplitude" required >
+      <br>
+      <label for="lphase">Phase (0-3600):</label>
+      <input type="number" input maxlength='4' size="4" min="0" max="3600" value='0000' id="lphase" name="phase" required >
+      <br><br>
+  
+      <div class="div_buttons ">
+        <Label>Operation mode</label><br>
+        <input type="radio" id="off" name="adMode" value="off" checked="checked">
+        <label for="off">Off</label><br>
+        <input type="radio" id="sine" name="adMode" value="sinewave">
+        <label for="css">Sinewave</label><br>
+        <input type="radio" id="tri" name="adMode" value="triangle">
+        <label for="javascript">Triangle</label><br>
+        <input type="radio" id="sq1" name="adMode" value="square1">
+        <label for="javascript">Square</label><br>
+        <input type="radio" id="sq2" name="adMode" value="square2">
+        <label for="javascript">Square2</label><br>
+      </div>
+      <br>
+      <button class="submit_button" style="vertical-align:middle" onclick="sendData(0)">Submit</button>
+      
+  </div>
+</div>
+
+<div id="tfrSweep" class="tabcontent">
+  <h3>Paris</h3>
+  <p>Paris is the capital of France.</p> 
+</div>
+
+<div id="tAmplsweep" class="tabcontent">
+  <h3>Tokyo</h3>
+  <p>Tokyo is the capital of Japan.</p>
+</div>
+<div id="tabInfo" class="tabcontent">
+  <h3>Info tab</h3>
+  <p>This is going to have lots of info</p>
+</div>
+
+</body>
+  
+<script type="text/javascript" src="./main.js"></script>
+</html>
+
+
+
+
+
+<!-- HTML !-->
+

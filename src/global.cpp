@@ -29,6 +29,8 @@ float       AD9833_frequency;            // Frequency for AD9833 refclk=25MHz
 MD_AD9833::mode_t      AD9833_mode;                // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE
 uint16_t    AD9833_phase;               // Phase setting in degrees [0..3600]
 uint8_t     MCP41010_value;               // MCP41010 digital potentiometer value [0-255]
-// Global variable for the digital potentiometer
+
+// Global variable for the websocket data structure
+struct json_data_struct workingParameters;
 
  
