@@ -60,12 +60,6 @@
 
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
-//
-
-#define NUMFLAKES     10 // Number of snowflakes in the animation example
-
-#define LOGO_HEIGHT   16
-#define LOGO_WIDTH    16
 
 // ----------------------------------------------
 // Rotary encoder + push button
@@ -94,10 +88,24 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 #include "webSocketObject.h"
 #include "various_functions.h"
 #include "alexa_functions.h"
+//#include "ui_functions.h"
+
 // Filesystem
 #define FORMAT_LittleFS_IF_FAILED true
 #include "configurationObject.h"
 
+// ------------
+// FSM states files
+// State results
+# define STATE__NO_CHANGE 0
+
+// State constants
+#define FSM_BASIC_FREQUENCY 0
+
+#include "states/stateObject.h"
+#include "states/basicFrequencyState.h"
+
+// ---------------
 // Include global varibales
 #include "global.h"
 // ---------------------------------------------

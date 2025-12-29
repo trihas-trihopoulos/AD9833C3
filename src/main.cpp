@@ -33,6 +33,9 @@ void setup()
     graphics_setup();
 
     // Initialise digital potentiometer
+    // pinMode(MCP41010_CS, OUTPUT);
+    // mcp41010_pot.setSWSPIdelay(50);
+
     mcp41010_pot.begin();
 
     // Initialise signal generator AD9833
@@ -76,28 +79,50 @@ void setup()
     // TEST CODE
     // =================================================
     Serial.println("Test code");
-    // Test that display is still reachable
-    testscrolltext();
     
-    pot_update_timer=millis();
+    stateBasicFrequency.startupObject();
 
-    // filesystem_test_setup();      // Test filesystem *TO BE REMOVED*
-    // ---------------------------------------------
-
-    // ---------------------------------------------
-
-// ---------------------------------------------
 
 }
 
-float               freq= 10000;
-MD_AD9833::mode_t   md = MD_AD9833::MODE_SINE;
-uint16_t            ph=0;
-uint8_t             pot=0;
+
 //----
 void loop() 
 {
-    int i = 0;
-    joystick_switches_loop();
- 
+    int delta = 0;
+
+    switch (mainDisplayState)
+    {
+    case FSM_BASIC_FREQUENCY:
+        delta = stateBasicFrequency.loopObject();
+        break;
+    
+    default:
+        break;
+    }
+
+    delayMicroseconds(10);
+
 }
+
+
+
+
+/*
+
+    
+ filesystem_test_setup();      // Test filesystem *TO BE REMOVED*
+ display.clearDisplay();
+ uobj.drawFunction();
+ display.display();
+ Serial.println("Done drawing character set");
+ delay(1000);
+
+ drawSignalGeneratorParameters();
+ pot_update_timer=millis();
+
+ // ---------------------------------------------
+
+
+
+*/

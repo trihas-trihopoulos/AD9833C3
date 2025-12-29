@@ -7,5 +7,5 @@ extern void webserver_notFound(AsyncWebServerRequest *request);
 extern void serverSetup();
 extern void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 
-
+// Add favicon.ico
 #endif //WEBSERVER_FUNCTIONS_H

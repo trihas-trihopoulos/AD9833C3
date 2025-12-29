@@ -3,7 +3,7 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);       // The display object
 MD_AD9833	AD(AD9833_DATA, AD9833_CLK, AD9833_FSYNC);  // AD9833 (?)
-MCP_POT     mcp41010_pot(MCP41010_CS, AD9833_DATA, AD9833_CLK);                          // MCP41010 potentiometer
+MCP41010     mcp41010_pot(MCP41010_CS, AD9833_DATA, AD9833_CLK);                          // MCP41010 potentiometer
 
 // Web and OTA server
 ESPAsyncHTTPUpdateServer updateServer;
@@ -33,4 +33,13 @@ uint8_t     MCP41010_value;               // MCP41010 digital potentiometer valu
 // Global variable for the websocket data structure
 struct json_data_struct workingParameters;
 
- 
+ // -----------------------------------
+ // Display state objects
+int mainDisplayState =0;       // Display FSM state variable
+basicFrequencyStateObject stateBasicFrequency;            // Basic frequency display state
+
+
+ // Variables used to step up/down amplituded and frequency from joystick
+u_int8_t amplitudeStep=10;
+u_int8_t frequencyStep=100;
+

@@ -6,14 +6,13 @@ char * AD9833_mode_strings[]  = {"Off", "Sinewave", "Triangle", "Square", "Squar
 // Update the signal generator board with the parameters from the global variables
 void set_signal_generator_parameters()
 {
-    AD.setFrequency(MD_AD9833::CHAN_0, AD9833_frequency);            // Sets the frequency on channel 0;
+    mcp41010_pot.setValue(MCP41010_value);                          //?? double write required?
 
     AD.setMode(AD9833_mode);                                        // Sets the mode MD_AD9833::MODE_OFF,MD_AD9833::MODE_SINE,MD_AD9833::MODE_TRIANGLE,MD_AD9833::MODE_SQUARE1
-
+    AD.setFrequency(MD_AD9833::CHAN_0, AD9833_frequency);            // Sets the frequency on channel 0;
     AD.setPhase(MD_AD9833::CHAN_0, AD9833_phase);                   // Sets the phase
     AD.setActivePhase(MD_AD9833::CHAN_0);                           // Sets the active phase on channel 0
-
-    mcp41010_pot.setValue(MCP41010_value);
+    mcp41010_pot.setValue(MCP41010_value);                             //?? double write required?
 }
 
 // ---------------
@@ -22,8 +21,8 @@ void print_signal_generator_parameters()
 {
     int str_index = 0;
 
-    Serial.printf("\n------------------");
-    Serial.printf("Frequency: %8.2f\n", AD9833_frequency);
+    Serial.printf("\n------------------\n");
+    Serial.printf("Frequency: %8.2fHz\n", AD9833_frequency);
 
     switch(AD9833_mode)             // Find mode string
     {

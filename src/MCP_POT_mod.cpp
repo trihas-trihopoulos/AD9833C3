@@ -176,6 +176,7 @@ void MCP_POT::updateDevice(uint8_t pm, uint8_t value, uint8_t cmd)
   if (pm == 1) command |= 2;   //  10
   if (pm == 2) command |= 3;   //  11 => both potentiometers
   //  otherwise ignore
+  //Serial.printf("_swSPIdelay:%d, pm:%d, _hwSPI:%d, _select:%d, dao:%d, clk:%d, cmd:%x, command:%x, value:%x\n",_swSPIdelay, pm, _hwSPI, _select, _dataOut, _clock, cmd, command, value);
   digitalWrite(_select, LOW);
   if (_hwSPI)
   {

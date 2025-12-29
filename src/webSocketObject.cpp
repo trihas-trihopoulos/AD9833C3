@@ -46,6 +46,9 @@ void prepareDataForJSONTransmission()
   DEBUG_PRINTLN("---\n");
   serializeJson(txJsonBuffer, outputString);
   ws.textAll(outputString);   // Send the response to all clients
+
+  // Update display (will be done in the loop)   drawSignalGeneratorParameters();
+  
 }
 // ---------------------------
 // Parses received data
@@ -227,7 +230,7 @@ void updateBasicParametersFromReceivedJson()
   AD9833_phase        = workingParameters.AD9833_phase;
   AD9833_frequency    = workingParameters.AD9833_frequency;
   AD9833_mode         = (MD_AD9833::mode_t) workingParameters.AD9833_mode;
-  MCP41010_value      = workingParameters.AD9833_phase;
+  MCP41010_value      = workingParameters.MCP41010_value & 0x00FF;
   set_signal_generator_parameters();
   print_signal_generator_parameters();
 

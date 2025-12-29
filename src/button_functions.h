@@ -10,26 +10,12 @@
 #define M_BUTTON_PIN    5
 
 // ---------------------------------------------------
-extern ezButton left_button;
-extern ezButton right_button;
-extern ezButton forward_button;
-extern ezButton backward_button;
-extern ezButton middle_button;
+extern uint8_t button_pressed;
+extern uint8_t button_released;
+extern uint8_t previous_button_pressed;
+extern uint8_t previous_button_released;
 
-extern int left_button_state;
-extern int right_button_state;
-extern int forward_button_state;
-extern int backward_button_state;
-extern int middle_button_state;
-
-
-extern int previous_left_button_state    ;
-extern int previous_right_button_state   ;
-extern int previous_forward_button_state ;
-extern int previous_backward_button_state;
-extern int previous_middle_button_state  ;
-
-void joystick_switches_loop();
+bool joystick_switches_loop();
 void joystick_switches_setup();
 // ---------------------------------------------------
 #endif          // BUTTON_FUNCTIONS_H

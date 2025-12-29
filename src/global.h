@@ -6,7 +6,7 @@
 
 extern Adafruit_SSD1306 display;        // The display object
 extern MD_AD9833	AD;                 // AD9833 instance
-extern MCP_POT     mcp41010_pot;        // MCP41010 pot
+extern MCP41010     mcp41010_pot;        // MCP41010 pot
 
 extern ESPAsyncHTTPUpdateServer updateServer;       // OTA server
 extern AsyncWebServer server;                       // Asynch web server
@@ -31,5 +31,16 @@ extern uint16_t    AD9833_phase;               // Phase setting in degrees [0..3
 extern uint8_t     MCP41010_value;               // MCP41010 digital potentiometer value [0-255]
 
 extern struct json_data_struct workingParameters;
+// ------------
+// State variables
+extern int mainDisplayState;       // Display FSM state variable
+extern basicFrequencyStateObject stateBasicFrequency;            // Basic frequency display state
+
+
+// ------------
+// Step change variables
+extern u_int8_t amplitudeStep;
+extern u_int8_t frequencyStep;
+
 // ------------
 #endif  //GLOBAL_H

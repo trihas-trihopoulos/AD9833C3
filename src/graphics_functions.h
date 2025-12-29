@@ -5,9 +5,16 @@
 #include "AD9833C3.h"
 
 
-// ---------------------------------------------------
+#define SIGNAL_GENERATOR_HEIGHT   64
+#define SIGNAL_GENERATOR_WIDTH    128
 
+void drawSignalGeneratorBitmap(void);
+
+// ---------------------------------------------------
+// Adafruit library 
 void graphics_setup();
+
+// -------
 void testdrawline();      // Draw many lines
 void testdrawrect();      // Draw rectangles (outlines)
 void testfillrect();      // Draw rectangles (filled)
@@ -22,6 +29,9 @@ void testdrawstyles();    // Draw 'stylized' characters
 void testscrolltext();    // Draw scrolling text
 void testdrawbitmap();    // Draw a small bitmap image
 void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h);
+
+
+// =============================================
 
 // ------------
 #endif // GRAPHICS_FUNCTIONS_H

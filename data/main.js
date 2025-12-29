@@ -2,6 +2,7 @@ var connection = new WebSocket('ws://' + location.hostname + '/ws', ['arduino'])
 
 connection.onopen = function () {
   console.log('Connected: ');
+  sendData(0);
 };
 
 connection.onerror = function (error) {
@@ -32,7 +33,6 @@ let stopAmplitude       = "";
 let stepAmplitude       = "";      
 let amplitudeStepTime   = "";          
 let sweepMode           = "";  
-sendData(0)
 
 // --------
 function openMyTab(evt, TabName) {
@@ -49,10 +49,14 @@ function openMyTab(evt, TabName) {
   evt.currentTarget.className += " active";
 }
 // --------
-function sendData(buttonPressed)
+function sendData(command)
 {
-  switch (buttonPressed) {
+  switch (command) 
+  {
     case 0:
+      sendUpdatedParametersRequest();      
+      break;
+    case 1:
       sendBasicParameters();      
       break;
   
@@ -65,9 +69,45 @@ function sendData(buttonPressed)
 function processData(data)
 {
   console.log("Received data:");
+  console.log(data);
   let json = JSON.parse(data); 
-  console.log(json);
- 
+
+  document.getElementById('fr').value           = json["ADfreq"];
+  document.getElementById('lphase').value       = json["ADphas"];
+  document.getElementById('lampl').value        = json["MCPval"];
+
+  let mode = json["ADmode"];
+  switch (mode) 
+  {
+    case 0:
+      document.getElementById('off').checked = true 
+      break;
+    case 1:
+      document.getElementById('sine').checked = true 
+      break;
+    case 2:
+      document.getElementById('tri').checked = true 
+      break;
+    case 3:
+      document.getElementById('sq1').checked = true 
+      break;
+    case 4:
+      document.getElementById('sq2').checked = true 
+      break;
+    default:
+      break;
+  }
+}
+// Request update from ESP
+function sendUpdatedParametersRequest()
+{
+  const JsonValues = 
+  {
+  "cmd":0
+  }
+	var jsonData = JSON.stringify(JsonValues);
+  console.log(jsonData);
+  connection.send(jsonData);
 }
 // --- Just the basic parameters
 function sendBasicParameters()
