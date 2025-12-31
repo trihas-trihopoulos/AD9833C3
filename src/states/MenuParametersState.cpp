@@ -56,38 +56,56 @@ int ParametersMenuStateObject::loopObject()
     Serial.printf("button_pressed: %x, button_released: %x\n",button_pressed, button_released);
     switch (button_released)
     {
-    case 0x1 :    // Left
-      break;
-    case 0x2 :    // right
-      break;
-    case 0x4 :    // Forward
-      if (menuCursorPosition != 0)    // we are still inside the screen
-        menuCursorPosition --;
-      else
-      {
-        if (menuDisplayStartPosition > 0)
-          menuDisplayStartPosition --;
+      case 0x1 :    // Left
+        break;
+      case 0x2 :    // right
+        break;
+      case 0x4 :    // Forward
+        if (menuCursorPosition != 0)    // we are still inside the screen
+          menuCursorPosition --;
+        else
+        {
+          if (menuDisplayStartPosition > 0)
+            menuDisplayStartPosition --;
+        }
+        break;
+      case 0x8 :    // Backward
+        if (
+          (menuCursorPosition < MENU_MAX_ENTRIES_ON_SCREEN - 1) &&
+          ((menuDisplayStartPosition + menuCursorPosition) < (menuLength-1))
+          )
+          menuCursorPosition ++;
+        else
+        {
+          if (menuDisplayStartPosition < (menuLength - MENU_MAX_ENTRIES_ON_SCREEN) )
+            menuDisplayStartPosition ++;
+        }
+        break;
+        
+      case 0x10 :    // Middle
+        int entry = menuDisplayStartPosition + menuCursorPosition;
+        Serial.printf("entry:%d\n",entry);
+        switch (entry)
+        {
+          case 0:
+            stateChange = FSM_MODE_MENU;  // Switch to Mode menu
+            break;
+          case 1: 
+            stateChange = FSM_FREQUENCY_EDIT;  // Switch to edit frequency
+            break;
+          case 2: 
+            stateChange = FSM_MAIN_MENU;  // Exit, switch to main menu
+            break;
+          case 3: 
+            stateChange = FSM_MAIN_MENU;  // Exit, switch to main menu
+            break;
+          case 4: 
+            stateChange = FSM_MAIN_MENU;  // Exit, switch to main menu
+            break;
+          case 5: 
+            stateChange = FSM_MAIN_MENU;  // Exit, switch to Mode menu
+            break;
       }
-      break;
-    case 0x8 :    // Backward
-      if (
-        (menuCursorPosition < MENU_MAX_ENTRIES_ON_SCREEN - 1) &&
-        ((menuDisplayStartPosition + menuCursorPosition) < (menuLength-1))
-        )
-        menuCursorPosition ++;
-      else
-      {
-        if (menuDisplayStartPosition < (menuLength - MENU_MAX_ENTRIES_ON_SCREEN) )
-          menuDisplayStartPosition ++;
-      }
-
-      break;
-    case 0x10 :    // Middle
-      Serial.println("Middle button pressed");
-      stateChange = FSM_BASIC_SCREEN;
-
-      break;
-    default:
       break;
     }
     drawParametersMenu(this);    // Button was pressed - redraw

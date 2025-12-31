@@ -37,10 +37,10 @@ extern int mainDisplayState;       // Display FSM state variable, holds current 
 
 extern mainScreenStateObject           statemainScreen;
 
-extern mainMenuStateObject         *statemainMenu;                        // Basic menu display state
+extern mainMenuStateObject          *statemainMenu;                        // Basic menu display state
 extern ParametersMenuStateObject    *stateParametersMenu;                  // Basic parameters menu display state
 extern basicModeStateObject         *stateModeMenu;                        // Basic mode menu display state
-
+extern freqEditStateObject          *stateEditFrequency;
 
 // -------
 // Menus

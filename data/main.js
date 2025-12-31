@@ -86,13 +86,13 @@ function processData(data)
       document.getElementById('sine').checked = true 
       break;
     case 2:
-      document.getElementById('tri').checked = true 
-      break;
-    case 3:
       document.getElementById('sq1').checked = true 
       break;
-    case 4:
+    case 3:
       document.getElementById('sq2').checked = true 
+      break;
+    case 4:
+      document.getElementById('tri').checked = true 
       break;
     default:
       break;

@@ -89,11 +89,11 @@ int mainMenuStateObject::loopObject()
       switch (entry)
       {
         case 0: 
-          stateChange = FSM_MODE_MENU;  // Switch to Mode menu
+          stateChange = FSM_PARAMETERS_MENU;  // Switch to Mode menu
         break;
 
         case 4: 
-          stateChange = FSM_BASIC_SCREEN;  // Switch to Mode menu
+          stateChange = FSM_BASIC_SCREEN;  // Switch to Basic screen
         break;
       
         default:

@@ -107,10 +107,10 @@ int basicModeStateObject::loopObject()
           AD9833_mode = convertIntToAD9833Mode(entry);
           break;
         case 5: 
-          stateChange = FSM_BASIC_MENU;  // Switch to Mode menu
+          stateChange = FSM_MAIN_MENU;  // Switch to Mode menu
         break;
       }
-      stateChange = FSM_BASIC_MENU;
+      stateChange = FSM_MAIN_MENU;
       break;
     }
     drawBasicModeMenu(this);    // Button was pressed - redraw

@@ -125,7 +125,7 @@ int mainScreenStateObject::loopObject()
       break;
     case 0x10 :    // Middle
       Serial.println("Middle button pressed");
-      stateChange = FSM_BASIC_MENU;
+      stateChange = FSM_MAIN_MENU;
 
       break;
     default:
