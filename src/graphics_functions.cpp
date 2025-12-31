@@ -99,7 +99,7 @@ void graphics_setup()
   }
 
   drawSignalGeneratorBitmap();
-  delay(5000); // Pause for 2 seconds
+  delay(3000); // Pause for 2 seconds
 }
 
 // -------------------------

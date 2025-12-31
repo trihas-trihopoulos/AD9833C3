@@ -21,3 +21,9 @@ int stateObject::loopObject()
     drawFunction();
     return(stateChange);
 };
+// ---
+// Dummy redraw object function
+void stateObject::redraw()
+{
+
+}

@@ -80,8 +80,12 @@ void setup()
     // =================================================
     Serial.println("Test code");
     
-    stateBasicFrequency.startupObject();
+    statemainScreen.startupObject();    // main screen, thus startupObject is called here
+    mainDisplayState = FSM_BASIC_SCREEN;
 
+    statemainMenu           = new mainMenuStateObject(mainMenuStrings, mainMenuStrings_LENGTH);
+    stateParametersMenu     = new ParametersMenuStateObject(basicParametersMenuStrings, basicParametersMenuStrings_LENGTH);
+    stateModeMenu           = new basicModeStateObject(basicModeMenuStrings, basicModeMenuStrings_LENGTH);
 
 }
 
@@ -93,18 +97,74 @@ void loop()
 
     switch (mainDisplayState)
     {
-    case FSM_BASIC_FREQUENCY:
-        delta = stateBasicFrequency.loopObject();
+    // -----------------
+    case FSM_BASIC_SCREEN:
+        delta = statemainScreen.loopObject();
+        if (delta)  // Branch to a different state
+        {
+            switch (delta)
+            {
+            case FSM_BASIC_MENU:                    // Switch to MENU
+                statemainScreen.stateChange = STATE__NO_CHANGE;
+                
+                statemainMenu->startupObject();     // Basic screen is the main screen, thus startupObject is called here
+                mainDisplayState = FSM_BASIC_MENU;  // Menu is on the screen
+                drawmainMenu(statemainMenu);      // Force initial menu drawing
+                break;
+           
+            default:
+                break;
+            }
+        }
         break;
-    
+    // -----------------
+    case FSM_BASIC_MENU:
+        delta = statemainMenu->loopObject();
+        if (delta)  // Branch to a different state
+        {
+            switch (delta)
+            {
+                case FSM_MODE_MENU:
+                    statemainMenu->stateChange = STATE__NO_CHANGE;
+                    stateModeMenu->startupObject();          // Basic screen is the main screen, thus startupObject is called here
+                    mainDisplayState = FSM_MODE_MENU;    // Switch to mode menu on screen
+                    break;
+
+                case FSM_BASIC_SCREEN:
+                    statemainMenu->stateChange = STATE__NO_CHANGE;
+                    statemainScreen.redraw();     // Basic screen is the main screen, redraw to update
+                    mainDisplayState = FSM_BASIC_SCREEN;  // Menu is on the screen
+                    break;
+                default:
+                    break;
+            } // FSM_BASIC_MENU
+        }
+        break;
+    // -----------------
+    case FSM_MODE_MENU:
+        delta = stateModeMenu->loopObject();
+        if (delta)  // Branch to a different state
+        {
+            switch (delta)
+            {
+                case FSM_BASIC_MENU:
+                    stateModeMenu->stateChange = STATE__NO_CHANGE;
+                    statemainMenu->startupObject();        // Basic screen is the main screen, thus startupObject is called here
+                    mainDisplayState = FSM_BASIC_MENU;  // Menu is on the screen
+                    break;
+                default:
+                    break;
+
+            }// FSM_MODE_MENU
+        }
+        break;
+    // -----------------
     default:
         break;
     }
 
-    delayMicroseconds(10);
-
-}
-
+    delayMicroseconds(10);      // Breathing space ?
+} 
 
 
 

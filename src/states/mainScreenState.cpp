@@ -10,7 +10,9 @@ void drawSignalGeneratorParameters(void)
   display.setTextSize(1);             // Normal 1:1 pixel scale
 
   display.setCursor(0,0);             // Start at row 8
+  display.setTextColor(SSD1306_WHITE);
   display.print("M:");
+
   if (AD9833_mode == 0)               // OFF
     display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); // Draw 'inverse' text
   display.print("OFF");
@@ -23,22 +25,23 @@ void drawSignalGeneratorParameters(void)
   display.setTextColor(SSD1306_WHITE);
   display.print("|");
 
-  if (AD9833_mode == 2)               // TRIANGLE
-    display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); // Draw 'inverse' text
-  display.print("TRI");
-  display.setTextColor(SSD1306_WHITE);
-  display.print("|");
-
-  if (AD9833_mode == 3)               // TRIANGLE
+  if (AD9833_mode == 2)               // SQUARE1
     display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); // Draw 'inverse' text
   display.print("SQ1");
   display.setTextColor(SSD1306_WHITE);
   display.print("|");
 
-  if (AD9833_mode == 4)               // TRIANGLE
+  if (AD9833_mode == 3)               // SQUARE2
     display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); // Draw 'inverse' text
   display.print("SQ2");
   display.setTextColor(SSD1306_WHITE);
+
+  if (AD9833_mode == 4)               // TRIANGLE
+    display.setTextColor(SSD1306_BLACK, SSD1306_WHITE); // Draw 'inverse' text
+  display.print("TRI");
+  display.setTextColor(SSD1306_WHITE);
+  display.print("|");
+
 
   display.drawLine(0, 9, 127, 9, SSD1306_WHITE);
 
@@ -70,32 +73,35 @@ void drawSignalGeneratorParameters(void)
   sprintf(frstr,"%04d",AD9833_phase);
   display.println(frstr);
 
-  
-
-
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
-  display.setCursor(0,120);             // Start at top-left corner
-  display.println(F("Footer - Overlay text"));
-
   display.display();
+  // Update websocket clients
+  updateWebSocketClients();
 }
 // -----
 // -----
-basicFrequencyStateObject::basicFrequencyStateObject()
+mainScreenStateObject::mainScreenStateObject()
 {
-  Serial.println("Constructor of basicFrequencyStateObject");
+  DEBUG_PRINTLN("Constructor of mainScreenStateObject");
 };
 // ---
-void basicFrequencyStateObject::startupObject()
+void mainScreenStateObject::startupObject()
 {
-  Serial.println("startupObject of basicFrequencyStateObject");
+  DEBUG_PRINTLN("startupObject of mainScreenStateObject");
   drawFunction =  (screensFunction *) drawSignalGeneratorParameters;
   inputFunction = (inputsFunction *) manageJoystickInputs;
   onDisplay_AD9833_frequency = -1.0;  // Force update on first run
 };
 
+
 // ---
-int basicFrequencyStateObject::loopObject()
+// Forces redrawing 
+void mainScreenStateObject::redraw()
+{
+  onDisplay_AD9833_frequency = -1;    
+}
+// ---
+// loop function
+int mainScreenStateObject::loopObject()
 {
   bool button = joystick_switches_loop();       // Read buttons
   if (button)
@@ -119,6 +125,8 @@ int basicFrequencyStateObject::loopObject()
       break;
     case 0x10 :    // Middle
       Serial.println("Middle button pressed");
+      stateChange = FSM_BASIC_MENU;
+
       break;
     default:
       break;
@@ -140,7 +148,7 @@ int basicFrequencyStateObject::loopObject()
         (onDisplay_MCP41010_value != MCP41010_value)
       )
   {
-  Serial.println("loopObject of basicFrequencyStateObject");
+  DEBUG_PRINTLN("loopObject of mainScreenStateObject");
     onDisplay_AD9833_frequency = AD9833_frequency;
     onDisplay_AD9833_mode = AD9833_mode;
     onDisplay_AD9833_phase = AD9833_phase;
@@ -148,5 +156,5 @@ int basicFrequencyStateObject::loopObject()
     drawFunction();
   }
 
-  return(STATE__NO_CHANGE);
+  return(stateChange);
 };

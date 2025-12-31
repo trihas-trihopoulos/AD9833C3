@@ -100,10 +100,16 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 # define STATE__NO_CHANGE 0
 
 // State constants
-#define FSM_BASIC_FREQUENCY 0
+#define FSM_BASIC_SCREEN   1
+#define FSM_BASIC_MENU     2
+#define FSM_MODE_MENU      3
 
 #include "states/stateObject.h"
-#include "states/basicFrequencyState.h"
+#include "states/mainScreenState.h"
+// menus
+#include "states/mainMenuState.h"
+#include "states/MenuParametersState.h"
+#include "states/basicModeState.h"
 
 // ---------------
 // Include global varibales

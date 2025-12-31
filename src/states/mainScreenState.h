@@ -1,5 +1,5 @@
-#ifndef BASIC_FREQUENCY_STATE_H
-#define BASIC_FREQUENCY_STATE_H
+#ifndef MAIN_SCREEN_STATE_H
+#define MAIN_SCREEN_STATE_H
 // ------------
 #include "Arduino.h"
 
@@ -8,7 +8,7 @@ typedef void (screensFunction)(void);               // function pointer to scree
 typedef int (inputsFunction)(void);                // function pointer to inputs (buttons etc) handling function
 
 // -------
-class basicFrequencyStateObject : public stateObject {
+class mainScreenStateObject : public stateObject {
   private:
     // Parameters on display
     float       onDisplay_AD9833_frequency;            // Frequency for AD9833 refclk=25MHz 
@@ -17,14 +17,14 @@ class basicFrequencyStateObject : public stateObject {
     uint8_t     onDisplay_MCP41010_value;               // MCP41010 digital potentiometer value [0-255]
     
   public:
-    basicFrequencyStateObject();
+    mainScreenStateObject();
     screensFunction *drawFunction=NULL;                  // Called for screen drawing
     inputsFunction  *inputFunction=NULL;
     virtual void startupObject();
     virtual int loopObject();
-
+    virtual void redraw();
 };
 // ------------
 void drawSignalGeneratorParameters(void);
 // ------------
-#endif  //BASIC_FREQUENCY_STATE_H
+#endif  //MAIN_SCREEN_STATE_H

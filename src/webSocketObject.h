@@ -8,7 +8,7 @@ void receiveDataWs(AsyncWebSocketClient * client, String request);
 void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);
 
 void updateBasicParametersFromReceivedJson();
-
+void updateWebSocketClients();
 // -------------------------------
 // Commands for the web socket
 #define    JSON_COMMAND_SEND_UPDATE             0            // Update browser with the current workingParameters

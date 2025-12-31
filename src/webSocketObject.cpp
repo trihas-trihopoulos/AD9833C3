@@ -198,28 +198,8 @@ void InitialiseWorkingParameters()
 void updateBasicParametersFromReceivedJson()
 {
   int mode = rxJsonBuffer["ADmode"];;
-
-  switch (mode)
-  {
-  case 0:
-    workingParameters.AD9833_mode         = MD_AD9833::MODE_OFF;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
-    break;
-  case 1:
-    workingParameters.AD9833_mode         = MD_AD9833::MODE_SINE;    // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
-    break;
-  case 2:
-    workingParameters.AD9833_mode         = MD_AD9833::MODE_TRIANGLE; // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
-    break;
-  case 3:
-    workingParameters.AD9833_mode         = MD_AD9833::MODE_SQUARE1;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
-    break;
-  case 4:
-    workingParameters.AD9833_mode         = MD_AD9833::MODE_SQUARE2;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE  
-    break;
-  default:
-    workingParameters.AD9833_mode         = MD_AD9833::MODE_OFF;
-    break;
-  }
+  
+  workingParameters.AD9833_mode = convertIntToAD9833Mode(mode);
 
   workingParameters.command             = rxJsonBuffer["cmd"];
   workingParameters.AD9833_frequency    = atof(rxJsonBuffer["ADfreq"]);
@@ -235,7 +215,22 @@ void updateBasicParametersFromReceivedJson()
   print_signal_generator_parameters();
 
   DEBUG_PRINT("updateBasicParametersFromReceivedJson:");
+
   prepareDataForJSONTransmission();
+}
+
+// -------------------------------
+// Update the clients from the actual parameters
+void updateWebSocketClients()
+{
+  workingParameters.AD9833_phase                     =   AD9833_phase     ;                       
+  workingParameters.AD9833_frequency                 =   AD9833_frequency ;   
+  workingParameters.AD9833_mode                      =   AD9833_mode      ;                   
+  workingParameters.MCP41010_value                   =   MCP41010_value   ;           
+
+
+  prepareDataForJSONTransmission();
+}
 
 /*
   // toggle values
@@ -247,8 +242,6 @@ void updateBasicParametersFromReceivedJson()
   prepareDataForJSONTransmission();                 // update all clients
   // client->text(response);
 */
-}
-
 
 /*
 "cmd"  

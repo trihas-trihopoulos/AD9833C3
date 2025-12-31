@@ -20,6 +20,8 @@ class stateObject
     stateObject();
     screensFunction *drawFunction=NULL;                  // Called for screen drawing
     inputsFunction  *inputFunction=NULL;
+
+    virtual void redraw();
     virtual void startupObject();
     virtual int loopObject();
 };

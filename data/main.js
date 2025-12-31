@@ -122,13 +122,13 @@ function sendBasicParameters()
     case 'sinewave':
       AD9833_mode = 1;
       break;
-    case 'triangle':
+    case 'square1':
       AD9833_mode = 2;
       break;
-    case 'square1':
+    case 'square2':
       AD9833_mode = 3;
       break;
-    case 'square2':
+    case 'triangle':
       AD9833_mode = 4;
       break;
     default:

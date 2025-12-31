@@ -36,10 +36,21 @@ struct json_data_struct workingParameters;
  // -----------------------------------
  // Display state objects
 int mainDisplayState =0;       // Display FSM state variable
-basicFrequencyStateObject stateBasicFrequency;            // Basic frequency display state
 
+mainScreenStateObject           statemainScreen;            // Basic parameters menu display state - default screen
+// Menus
+mainMenuStateObject            *statemainMenu;  
+ParametersMenuStateObject       *stateParametersMenu;               // Parameters MENU display state
+basicModeStateObject            *stateModeMenu;                    // Basic mode menu display state 
 
  // Variables used to step up/down amplituded and frequency from joystick
 u_int8_t amplitudeStep=10;
 u_int8_t frequencyStep=100;
+
+
+// --------------------------------
+// char *mainMenuStrings[] = {"Mode","Frequency", "Amplitude", "Phase", "Exit"};
+char *mainMenuStrings[] = {"Parameters","Freq.sweep", "Ampl.sweep", "Info", "Exit"};
+char *basicParametersMenuStrings[] = {"Mode","Frequency", "Amplitude", "Phase", "Exit"};
+char *basicModeMenuStrings[] = {"Off","Sinewave", "Square", "Square2", "Triangle","Exit"};
 

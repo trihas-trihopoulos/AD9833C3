@@ -32,15 +32,32 @@ extern uint8_t     MCP41010_value;               // MCP41010 digital potentiomet
 
 extern struct json_data_struct workingParameters;
 // ------------
-// State variables
-extern int mainDisplayState;       // Display FSM state variable
-extern basicFrequencyStateObject stateBasicFrequency;            // Basic frequency display state
+// State variables-objects
+extern int mainDisplayState;       // Display FSM state variable, holds current state
+
+extern mainScreenStateObject           statemainScreen;
+
+extern mainMenuStateObject         *statemainMenu;                        // Basic menu display state
+extern ParametersMenuStateObject    *stateParametersMenu;                  // Basic parameters menu display state
+extern basicModeStateObject         *stateModeMenu;                        // Basic mode menu display state
 
 
+// -------
+// Menus
+extern char *basicParametersMenuStrings[];
+#define basicParametersMenuStrings_LENGTH 5 
+
+extern char *mainMenuStrings[];
+#define mainMenuStrings_LENGTH 5 
+
+extern char *basicModeMenuStrings[];
+#define basicModeMenuStrings_LENGTH 6 
 // ------------
 // Step change variables
 extern u_int8_t amplitudeStep;
 extern u_int8_t frequencyStep;
-
 // ------------
+
 #endif  //GLOBAL_H
+
+
