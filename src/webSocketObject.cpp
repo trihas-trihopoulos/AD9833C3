@@ -178,9 +178,9 @@ void InitialiseWorkingParameters()
     workingParameters.command = 0;                          // 1 - reports the AD9833 parameters only
 
     workingParameters.AD9833_frequency=1000;                // One kHz
-    workingParameters.AD9833_mode= MD_AD9833::MODE_OFF;     // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE
+    workingParameters.AD9833_mode= MD_AD9833::MODE_SINE;    // Enum mode_t MODE_OFF, MODE_SINE, MODE_SQUARE1, MODE_SQUARE2,  MODE_TRIANGLE
     workingParameters.AD9833_phase=0;                       // Phase setting in degrees [0..3600]
-    workingParameters.MCP41010_value=0;                     // MCP41010 digital potentiometer value [0-255]
+    workingParameters.MCP41010_value=100;                     // MCP41010 digital potentiometer value [0-255]
 
     workingParameters.startfrequency=1000;                  // Frequency sweep
     workingParameters.endfrequency=10000;
@@ -192,6 +192,13 @@ void InitialiseWorkingParameters()
     workingParameters.stepAmplitude=5;
     workingParameters.amplitudeStepTime=10;                 // in millisecondes
     workingParameters.sweepMode=0;                          // 0 - no sweep, 1 - frequency sweep, 2 - Amplitude seep, 3 - both Frequency and Amplitude (inner loop:amplitude)
+
+    AD9833_phase     = workingParameters.AD9833_phase     ;
+    AD9833_frequency = workingParameters.AD9833_frequency ;
+    AD9833_mode      = (MD_AD9833::mode_t ) workingParameters.AD9833_mode      ;
+    MCP41010_value   = workingParameters.MCP41010_value   ;
+
+
 }
 // ------------------------
 // Updates variables from data in rxJsonBuffer json buffer  

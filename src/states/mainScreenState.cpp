@@ -75,7 +75,7 @@ void drawSignalGeneratorParameters(void)
 
   display.display();
   // Update websocket clients
-  updateWebSocketClients();
+  // updateWebSocketClients();
 }
 // -----
 // -----
@@ -106,7 +106,6 @@ int mainScreenStateObject::loopObject()
   bool button = joystick_switches_loop();       // Read buttons
   if (button)
   {
-    Serial.printf("button_pressed: %x, button_released: %x\n",button_pressed, button_released);
     switch (button_released)
     {
     case 0x1 :    // Left
@@ -124,7 +123,6 @@ int mainScreenStateObject::loopObject()
       AD9833_frequency = AD9833_frequency - frequencyStep;
       break;
     case 0x10 :    // Middle
-      Serial.println("Middle button pressed");
       stateChange = FSM_MAIN_MENU;
 
       break;
@@ -137,7 +135,6 @@ int mainScreenStateObject::loopObject()
     if (AD9833_frequency > 12500000)
       AD9833_frequency = 12500000;
   
-    Serial.printf("AD9833_frequency: %08.2f, MCP41010_value: %d\n", AD9833_frequency, MCP41010_value);
   }
 
   // If updates from websocket, update screen
@@ -148,7 +145,6 @@ int mainScreenStateObject::loopObject()
         (onDisplay_MCP41010_value != MCP41010_value)
       )
   {
-  DEBUG_PRINTLN("loopObject of mainScreenStateObject");
     onDisplay_AD9833_frequency = AD9833_frequency;
     onDisplay_AD9833_mode = AD9833_mode;
     onDisplay_AD9833_phase = AD9833_phase;

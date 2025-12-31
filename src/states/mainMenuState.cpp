@@ -53,7 +53,7 @@ int mainMenuStateObject::loopObject()
   bool button = joystick_switches_loop();       // Read buttons
   if (button)
   {
-    Serial.printf("button_pressed: %x, button_released: %x\n",button_pressed, button_released);
+//    Serial.printf("button_pressed: %x, button_released: %x\n",button_pressed, button_released);
     switch (button_released)
     {
     case 0x1 :    // Left
@@ -85,7 +85,7 @@ int mainMenuStateObject::loopObject()
     // ----
     case 0x10 :    // Middle button pressed
       int entry = menuDisplayStartPosition + menuCursorPosition;
-      Serial.printf("entry:%d\n",entry);
+//      Serial.printf("entry:%d\n",entry);
       switch (entry)
       {
         case 0: 

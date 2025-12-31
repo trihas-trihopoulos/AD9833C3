@@ -40,8 +40,9 @@ extern mainScreenStateObject           statemainScreen;
 extern mainMenuStateObject          *statemainMenu;                        // Basic menu display state
 extern ParametersMenuStateObject    *stateParametersMenu;                  // Basic parameters menu display state
 extern basicModeStateObject         *stateModeMenu;                        // Basic mode menu display state
-extern freqEditStateObject          *stateEditFrequency;
-
+extern freqEditStateObject          *stateEditFrequency;        
+extern AmplEditStateObject          *stateEditAmplitude;                    
+extern PhaseEditStateObject         *stateEditPhase;                   
 // -------
 // Menus
 extern char *basicParametersMenuStrings[];

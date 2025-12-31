@@ -84,7 +84,7 @@ int ParametersMenuStateObject::loopObject()
         
       case 0x10 :    // Middle
         int entry = menuDisplayStartPosition + menuCursorPosition;
-        Serial.printf("entry:%d\n",entry);
+//        Serial.printf("entry:%d\n",entry);
         switch (entry)
         {
           case 0:
@@ -94,16 +94,13 @@ int ParametersMenuStateObject::loopObject()
             stateChange = FSM_FREQUENCY_EDIT;  // Switch to edit frequency
             break;
           case 2: 
-            stateChange = FSM_MAIN_MENU;  // Exit, switch to main menu
+            stateChange = FSM_AMPLITUDE_EDIT;  // Switch to amplitude edit screen
             break;
           case 3: 
-            stateChange = FSM_MAIN_MENU;  // Exit, switch to main menu
+            stateChange = FSM_PHASE_EDIT;  // Exit, switch to main menu
             break;
           case 4: 
             stateChange = FSM_MAIN_MENU;  // Exit, switch to main menu
-            break;
-          case 5: 
-            stateChange = FSM_MAIN_MENU;  // Exit, switch to Mode menu
             break;
       }
       break;

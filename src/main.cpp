@@ -1,12 +1,4 @@
-#include <Arduino.h>
-
 #include "AD9833C3.h"
-
-// ---------------------------------------------
-uint8_t pot_value = 0;
-uint64_t pot_update_timer=0;
-// ---------------------------------------------
-
 // ---------------------------------------------
 
 void setup() 
@@ -87,6 +79,8 @@ void setup()
     stateParametersMenu     = new ParametersMenuStateObject(basicParametersMenuStrings, basicParametersMenuStrings_LENGTH);
     stateModeMenu           = new basicModeStateObject(basicModeMenuStrings, basicModeMenuStrings_LENGTH);
     stateEditFrequency      = new freqEditStateObject();
+    stateEditAmplitude      = new AmplEditStateObject();
+    stateEditPhase          = new PhaseEditStateObject();
 }
 
 
@@ -157,6 +151,16 @@ void loop()
                     stateEditFrequency->startupObject();          // goig to edit frequency
                     mainDisplayState = FSM_FREQUENCY_EDIT;    // Switch to mode menu on screen FSM_PARAMETERS_MENU
                     break;
+                case FSM_AMPLITUDE_EDIT:
+                    stateParametersMenu->stateChange = STATE__NO_CHANGE;
+                    stateEditAmplitude->startupObject();          // goig to edit frequency
+                    mainDisplayState = FSM_AMPLITUDE_EDIT;    // Switch to mode menu on screen FSM_PARAMETERS_MENU
+                    break;
+                case FSM_PHASE_EDIT:
+                    stateParametersMenu->stateChange = STATE__NO_CHANGE;
+                    stateEditPhase->startupObject();          // goig to edit frequency
+                    mainDisplayState = FSM_PHASE_EDIT;    // Switch to mode menu on screen FSM_PARAMETERS_MENU
+                    break;
                 case FSM_MAIN_MENU:
                     stateParametersMenu->stateChange = STATE__NO_CHANGE;
                     statemainMenu->startupObject();        // Basic screen is the main screen, thus startupObject is called here
@@ -201,9 +205,47 @@ void loop()
         }
         break;      //FSM_FREQUENCY_EDIT
     // -----------------
+    case FSM_AMPLITUDE_EDIT:
+        delta = stateEditAmplitude->loopObject();
+        if (delta)  // Branch to a different state
+        {
+            switch (delta)
+            {
+                case FSM_MAIN_MENU:
+                    stateEditAmplitude->stateChange = STATE__NO_CHANGE;
+                    statemainMenu->startupObject();         // Basic screen is the main screen, thus startupObject is called here
+                    mainDisplayState = FSM_MAIN_MENU;       // Menu is on the screen
+                    break;
+                default:
+                    break;
+            }
+        }
+        break;      //FSM_FREQUENCY_EDIT
+    // -----------------
+    case FSM_PHASE_EDIT:
+        delta = stateEditPhase->loopObject();
+        if (delta)  // Branch to a different state
+        {
+            switch (delta)
+            {
+                case FSM_MAIN_MENU:
+                    stateEditPhase->stateChange = STATE__NO_CHANGE;
+                    statemainMenu->startupObject();         // Basic screen is the main screen, thus startupObject is called here
+                    mainDisplayState = FSM_MAIN_MENU;       // Menu is on the screen
+                    break;
+                default:
+                    break;
+            }
+        }
+        break;      //FSM_FREQUENCY_EDIT
+    // -----------------
     default:
         break;
     }
+
+    if (delta !=0 )   // State change
+        updateWorkingParameters();
+
 
     delayMicroseconds(10);      // Breathing space ?
 } 

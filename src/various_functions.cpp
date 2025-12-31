@@ -38,4 +38,23 @@ int manageJoystickInputs(void)
   return(STATE__NO_CHANGE);
 }
 //--------------
+void updateWorkingParameters(void)
+{
+  if(
+      (workingParameters.AD9833_phase     !=  AD9833_phase     ) ||                       
+      (workingParameters.AD9833_frequency !=  AD9833_frequency ) ||   
+      (workingParameters.AD9833_mode      !=  AD9833_mode      ) ||                   
+      (workingParameters.MCP41010_value   !=  MCP41010_value   )
+    )
+  {
+    workingParameters.AD9833_phase                     =   AD9833_phase     ;                       
+    workingParameters.AD9833_frequency                 =   AD9833_frequency ;   
+    workingParameters.AD9833_mode                      =   AD9833_mode      ;                   
+    workingParameters.MCP41010_value                   =   MCP41010_value   ;           
+    set_signal_generator_parameters();
+    prepareDataForJSONTransmission();
+    print_signal_generator_parameters();        
+  }
+
+}
 //--------------

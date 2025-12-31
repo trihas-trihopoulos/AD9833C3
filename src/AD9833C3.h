@@ -105,6 +105,8 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 #define FSM_PARAMETERS_MENU       10
 #define FSM_MODE_MENU             30
 #define FSM_FREQUENCY_EDIT        31
+#define FSM_AMPLITUDE_EDIT        32
+#define FSM_PHASE_EDIT            33
 
 #include "states/stateObject.h"
 #include "states/mainScreenState.h"
@@ -113,7 +115,8 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 #include "states/MenuParametersState.h"
 #include "states/basicModeState.h"
 #include "states/freqEditState.h"
-
+#include "states/AmplEditState.h"
+#include "states/PhaseEditState.h"
 // ---------------
 // Include global varibales
 

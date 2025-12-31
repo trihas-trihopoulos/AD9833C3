@@ -40,13 +40,15 @@ int mainDisplayState =0;       // Display FSM state variable
 mainScreenStateObject           statemainScreen;            // Basic parameters menu display state - default screen
 // Menus
 mainMenuStateObject             *statemainMenu;  
-ParametersMenuStateObject       *stateParametersMenu;               // Parameters MENU display state
+ParametersMenuStateObject       *stateParametersMenu;              // Parameters MENU display state
 basicModeStateObject            *stateModeMenu;                    // Basic mode menu display state 
 freqEditStateObject             *stateEditFrequency;               // Edit frequency screen
+AmplEditStateObject             *stateEditAmplitude;               // Edit amplitude screen
+PhaseEditStateObject            *stateEditPhase;                   // Edit phase screen
 
  // Variables used to step up/down amplituded and frequency from joystick
 u_int8_t amplitudeStep=10;
-u_int8_t frequencyStep=100;
+u_int8_t frequencyStep=1000;
 
 
 // --------------------------------

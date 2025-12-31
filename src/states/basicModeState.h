@@ -3,12 +3,6 @@
 // ------------
 #include "Arduino.h"
 
-
-typedef void (screensFunction)(void);               // function pointer to screen handling function
-typedef int (inputsFunction)(void);                // function pointer to inputs (buttons etc) handling function
-
-#define MENU_MAX_ENTRIES_ON_SCREEN      4           // 12 pixels height font + 8 height footer. Y positions are 0, 13, 26, 39 and 54
-
 // -------
 class basicModeStateObject : public stateObject 
 {

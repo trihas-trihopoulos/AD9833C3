@@ -47,10 +47,9 @@ void basicModeStateObject::startupObject()
   // Parameters on display
   menuCursorPosition        = 0;           // Current cursor position (inverted font), selection on middle button
   menuDisplayStartPosition  = 0;           // First menu entry in the entries char*[]
-   Serial.printf("menu printout\n");
-  for(int i =0; i<menuLength; i++)
-    Serial.printf("menu startupObject i:%d - %s\n", i, MenuEntriesPointer[i]); 
-  
+//   Serial.printf("menu printout\n");
+//  for(int i =0; i<menuLength; i++)
+//    Serial.printf("menu startupObject i:%d - %s\n", i, MenuEntriesPointer[i]); 
 };
 
 // ---
@@ -66,7 +65,7 @@ int basicModeStateObject::loopObject()
   bool button = joystick_switches_loop();       // Read buttons
   if (button)
   {
-    Serial.printf("button_pressed: %x, button_released: %x\n",button_pressed, button_released);
+//    Serial.printf("button_pressed: %x, button_released: %x\n",button_pressed, button_released);
     switch (button_released)
     {
     case 0x1 :    // Left
@@ -96,7 +95,7 @@ int basicModeStateObject::loopObject()
       break;
     case 0x10 :    // Middle
       int entry = menuDisplayStartPosition + menuCursorPosition;
-      Serial.printf("entry:%d\n",entry);
+//      Serial.printf("entry:%d\n",entry);
       switch (entry)
       {
         case 0: 
