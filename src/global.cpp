@@ -45,6 +45,7 @@ basicModeStateObject            *stateModeMenu;                    // Basic mode
 freqEditStateObject             *stateEditFrequency;               // Edit frequency screen
 AmplEditStateObject             *stateEditAmplitude;               // Edit amplitude screen
 PhaseEditStateObject            *stateEditPhase;                   // Edit phase screen
+RSSIStateObject                 *stateRSSI;                   // Edit phase screen
 
  // Variables used to step up/down amplituded and frequency from joystick
 u_int8_t amplitudeStep=10;

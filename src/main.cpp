@@ -81,6 +81,8 @@ void setup()
     stateEditFrequency      = new freqEditStateObject();
     stateEditAmplitude      = new AmplEditStateObject();
     stateEditPhase          = new PhaseEditStateObject();
+
+    stateRSSI               = new RSSIStateObject();
 }
 
 
@@ -122,6 +124,12 @@ void loop()
                     statemainMenu->stateChange = STATE__NO_CHANGE;
                     stateParametersMenu->startupObject();      // Going to parameters meni
                     mainDisplayState = FSM_PARAMETERS_MENU;    // Switch to mode menu on screen FSM_PARAMETERS_MENU
+                    break;
+
+                case FSM_RSSI:
+                    statemainMenu->stateChange = STATE__NO_CHANGE;
+                    stateRSSI->startupObject();      // Going to RSS graph screen
+                    mainDisplayState = FSM_RSSI;    // Switch to mode menu on screen FSM_RSSI
                     break;
 
                 case FSM_BASIC_SCREEN:
@@ -230,6 +238,24 @@ void loop()
             {
                 case FSM_MAIN_MENU:
                     stateEditPhase->stateChange = STATE__NO_CHANGE;
+                    statemainMenu->startupObject();         // Basic screen is the main screen, thus startupObject is called here
+                    mainDisplayState = FSM_MAIN_MENU;       // Menu is on the screen
+                    break;
+                default:
+                    break;
+            }
+        }
+        break;      //FSM_FREQUENCY_EDIT
+    // -----------------
+    // -----------------
+    case FSM_RSSI:
+        delta = stateRSSI->loopObject();
+        if (delta)  // Branch to a different state
+        {
+            switch (delta)
+            {
+                case FSM_MAIN_MENU:
+                    stateRSSI->stateChange = STATE__NO_CHANGE;
                     statemainMenu->startupObject();         // Basic screen is the main screen, thus startupObject is called here
                     mainDisplayState = FSM_MAIN_MENU;       // Menu is on the screen
                     break;

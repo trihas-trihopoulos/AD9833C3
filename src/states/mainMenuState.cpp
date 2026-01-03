@@ -90,11 +90,15 @@ int mainMenuStateObject::loopObject()
       {
         case 0: 
           stateChange = FSM_PARAMETERS_MENU;  // Switch to Mode menu
-        break;
+          break;
+
+        case 3: 
+          stateChange = FSM_RSSI;             // Switch to RSSI graph screen
+          break;
 
         case 4: 
           stateChange = FSM_BASIC_SCREEN;  // Switch to Basic screen
-        break;
+          break;
       
         default:
           break;

@@ -8,8 +8,11 @@
 #include <SPI.h>
 
 // -------------------
-#include <time.h>                       // time() ctime()
-#include <sys/time.h>                   // struct timeval
+#include "esp_wifi.h"       
+
+// -------------------
+#include <time.h>                 // time() ctime()
+#include <sys/time.h>             // struct timeval
 #include <FS.h>                   // File System Library
 #include <LittleFS.h>             // SPI Flash System Library
 
@@ -108,6 +111,9 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 #define FSM_AMPLITUDE_EDIT        32
 #define FSM_PHASE_EDIT            33
 
+#define FSM_NETWORK_INFO          40
+#define FSM_RSSI                  42
+
 #include "states/stateObject.h"
 #include "states/mainScreenState.h"
 // menus
@@ -117,6 +123,7 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 #include "states/freqEditState.h"
 #include "states/AmplEditState.h"
 #include "states/PhaseEditState.h"
+#include "states/RSSIState.h"
 // ---------------
 // Include global varibales
 

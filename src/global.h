@@ -42,7 +42,9 @@ extern ParametersMenuStateObject    *stateParametersMenu;                  // Ba
 extern basicModeStateObject         *stateModeMenu;                        // Basic mode menu display state
 extern freqEditStateObject          *stateEditFrequency;        
 extern AmplEditStateObject          *stateEditAmplitude;                    
-extern PhaseEditStateObject         *stateEditPhase;                   
+extern PhaseEditStateObject         *stateEditPhase;               
+extern RSSIStateObject              *stateRSSI;                            // RSSI graph state
+
 // -------
 // Menus
 extern char *basicParametersMenuStrings[];
