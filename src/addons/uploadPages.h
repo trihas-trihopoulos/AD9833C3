@@ -1,4 +1,35 @@
-const char index_html[] PROGMEM = R"rawliteral(
+#ifndef UPLOAD_PAGES_H
+#define UPLOAD_PAGES_H
+// ------------
+
+#define FIRMWARE_VERSION "v1.0"
+// ------
+// configuration structure
+struct Config {
+  String ssid;               // wifi ssid
+  String wifipassword;       // wifi password
+  String httpuser;           // username to access web admin
+  String httppassword;       // password to access web admin
+  int webserverporthttp;     // http port number for web admin
+};
+
+// variables
+extern Config config; 
+extern bool shouldReboot;            // schedule a reboot
+extern const String default_httpuser;
+extern const String default_httppassword;
+
+String processor(const String& var);
+void configureUploadWebServer();
+bool UploadCheckUserWebAuth(AsyncWebServerRequest * request);
+void handleUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final);
+String uploadListFiles(bool ishtml);
+void UploadNotFound(AsyncWebServerRequest *request); 
+String humanReadableSize(const size_t bytes);
+void rebootESP(String message);
+
+// ------
+const char upload_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -8,7 +39,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 <body>
   <p>Main page</p>
   <p>Firmware: %FIRMWARE%</p>
-  <p>Free Storage: <span id="freespiffs">%FREESPIFFS%</span> | Used Storage: <span id="usedspiffs">%USEDSPIFFS%</span> | Total Storage: <span id="totalspiffs">%TOTALSPIFFS%</span></p>
+  <p>Free Storage: <span id="freeLittleFS">%FREELittleFS%</span> | Used Storage: <span id="usedlittlefs">%USEDLittleFS%</span> | Total Storage: <span id="totallittlefs">%TOTALLittleFS%</span></p>
   <p>
   <button onclick="logoutButton()">Logout</button>
   <button onclick="rebootButton()">Reboot</button>
@@ -40,7 +71,7 @@ function listFilesButton() {
   document.getElementById("details").innerHTML = xmlhttp.responseText;
 }
 function downloadDeleteButton(filename, action) {
-  var urltocall = "/file?name=" + filename + "&action=" + action;
+  var urltocall = "/file?name=" + "/" + filename + "&action=" + action;
   xmlhttp=new XMLHttpRequest();
   if (action == "delete") {
     xmlhttp.open("GET", urltocall, false);
@@ -156,3 +187,6 @@ const char reboot_html[] PROGMEM = R"rawliteral(
 </body>
 </html>
 )rawliteral";
+
+
+#endif      //UPLOAD_PAGES

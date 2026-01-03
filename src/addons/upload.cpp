@@ -1,69 +1,27 @@
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <SPIFFS.h>
-#include "webpages.h"
+#include "../AD9833C3.h"
 
-#define FIRMWARE_VERSION "v0.0.1"
 
-const String default_ssid = "somessid";
-const String default_wifipassword = "mypassword";
 const String default_httpuser = "admin";
 const String default_httppassword = "admin";
 const int default_webserverporthttp = 80;
 
-// configuration structure
-struct Config {
-  String ssid;               // wifi ssid
-  String wifipassword;       // wifi password
-  String httpuser;           // username to access web admin
-  String httppassword;       // password to access web admin
-  int webserverporthttp;     // http port number for web admin
-};
-
 // variables
 Config config;                        // configuration
 bool shouldReboot = false;            // schedule a reboot
-AsyncWebServer *server;               // initialise webserver
 
 // function defaults
 String listFiles(bool ishtml = false);
 
-void setup() {
-  Serial.begin(115200);
+void upload_setup() 
+{
 
   Serial.print("Firmware: "); Serial.println(FIRMWARE_VERSION);
 
-  Serial.println("Booting ...");
-
-  Serial.println("Mounting SPIFFS ...");
-  if (!SPIFFS.begin(true)) {
-    // if you have not used SPIFFS before on a ESP32, it will show this error.
-    // after a reboot SPIFFS will be configured and will happily work.
-    Serial.println("ERROR: Cannot mount SPIFFS, Rebooting");
-    rebootESP("ERROR: Cannot mount SPIFFS, Rebooting");
-  }
-
-  Serial.print("SPIFFS Free: "); Serial.println(humanReadableSize((SPIFFS.totalBytes() - SPIFFS.usedBytes())));
-  Serial.print("SPIFFS Used: "); Serial.println(humanReadableSize(SPIFFS.usedBytes()));
-  Serial.print("SPIFFS Total: "); Serial.println(humanReadableSize(SPIFFS.totalBytes()));
+  Serial.print("LittleFS Free: "); Serial.println(humanReadableSize((LittleFS.totalBytes() - LittleFS.usedBytes())));
+  Serial.print("LittleFS Used: "); Serial.println(humanReadableSize(LittleFS.usedBytes()));
+  Serial.print("LittleFS Total: "); Serial.println(humanReadableSize(LittleFS.totalBytes()));
 
   Serial.println(listFiles());
-
-  Serial.println("Loading Configuration ...");
-
-  config.ssid = default_ssid;
-  config.wifipassword = default_wifipassword;
-  config.httpuser = default_httpuser;
-  config.httppassword = default_httppassword;
-  config.webserverporthttp = default_webserverporthttp;
-
-  Serial.print("\nConnecting to Wifi: ");
-  WiFi.begin(config.ssid.c_str(), config.wifipassword.c_str());
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
 
   Serial.println("\n\nNetwork Configuration:");
   Serial.println("----------------------");
@@ -79,33 +37,35 @@ void setup() {
   Serial.print("        DNS 3: "); Serial.println(WiFi.dnsIP(2));
   Serial.println();
 
-  // configure web server
-  Serial.println("Configuring Webserver ...");
-  server = new AsyncWebServer(config.webserverporthttp);
-  configureWebServer();
+ 
+  config.httpuser = default_httpuser;
+  config.httppassword = default_httppassword;
 
-  // startup web server
-  Serial.println("Starting Webserver ...");
-  server->begin();
+  configureUploadWebServer();
+
 }
-
-void loop() {
+// --------
+void upload_loop() {
   // reboot if we've told it to reboot
-  if (shouldReboot) {
-    rebootESP("Web Admin Initiated Reboot");
+  if (shouldReboot) 
+  {
+    Serial.println(F("Web Admin Initiated Reboot"));
+    esp_restart();
   }
 }
-
-void rebootESP(String message) {
+// --------
+void rebootESP(String message) 
+{
   Serial.print("Rebooting ESP32: "); Serial.println(message);
   ESP.restart();
 }
 
 // list all of the files, if ishtml=true, return html rather than simple text
-String listFiles(bool ishtml) {
+String uploadListFiles(bool ishtml) 
+{
   String returnText = "";
-  Serial.println("Listing files stored on SPIFFS");
-  File root = SPIFFS.open("/");
+  Serial.println("Listing files stored on LittleFS");
+  File root = LittleFS.open("/");
   File foundfile = root.openNextFile();
   if (ishtml) {
     returnText += "<table><tr><th align='left'>Name</th><th align='left'>Size</th><th></th><th></th></tr>";
@@ -130,7 +90,8 @@ String listFiles(bool ishtml) {
 
 // Make size of files human readable
 // source: https://github.com/CelliesProjects/minimalUploadAuthESP32
-String humanReadableSize(const size_t bytes) {
+String humanReadableSize(const size_t bytes) 
+{
   if (bytes < 1024) return String(bytes) + " B";
   else if (bytes < (1024 * 1024)) return String(bytes / 1024.0) + " KB";
   else if (bytes < (1024 * 1024 * 1024)) return String(bytes / 1024.0 / 1024.0) + " MB";

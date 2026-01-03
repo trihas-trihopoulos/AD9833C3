@@ -7,6 +7,9 @@ void webserver_notFound(AsyncWebServerRequest *request)
 // Check if fauxmo
     if (fauxmo.process(request->client(), request->method() == HTTP_GET, request->url(), body)) return;
 
+    String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
+    Serial.println(logmessage);
+
 // Handle not found request here...
     request->send(404, "text/plain", "Not found");
 }
@@ -42,7 +45,10 @@ void serverSetup()
     {
         Serial.println("Update finished : " + String(type) + " result: " + String(result));
     };
-    
+
+    //--------------------
+    // file upload additions
+    configureUploadWebServer();
     //--------------------
     // Register websocket server and add event handler
     ws.onEvent(onWsEvent);

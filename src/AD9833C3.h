@@ -124,6 +124,8 @@ const uint8_t MCP41010_CS   = 10;    // Load pin
 #include "states/AmplEditState.h"
 #include "states/PhaseEditState.h"
 #include "states/RSSIState.h"
+
+#include "addons/uploadPages.h"
 // ---------------
 // Include global varibales
 

@@ -1,6 +1,4 @@
 #include "../AD9833C3.h"
-
-
 // --------------------------------
 // Draws the graph axis and ticks
 void RSSIStateObject::drawAxis()
@@ -22,30 +20,6 @@ void RSSIStateObject::drawAxis()
 // --------------------------------
 void RSSIStateObject::drawRSSI()
 {
-/*
-
-    display.clearDisplay();
-
-    // Display frequency string
-    display.setTextSize(2);             // Draw 2X-scale text
-    display.setTextColor(SSD1306_WHITE);
-    display.setCursor(0, 0);      // Assuming 12 pixes character height
-    display.print("AMPLITUDE");
-    display.drawLine(0, 15, 127, 14, SSD1306_WHITE);
-    display.drawLine(0, 33, 127, 33, SSD1306_WHITE);
-
-  if (error)
-  {
-    display.setCursor(0,40);
-    display.setTextSize(1);             // Draw 2X-scale text
-    display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
-    display.print("ERROR!");
-    display.setCursor(0,50);
-    display.setTextColor(SSD1306_WHITE);
-    display.print("max is 255");
-  }
-  */
-
   int i;
   char tempstr[5];
 
@@ -69,16 +43,16 @@ void RSSIStateObject::drawRSSI()
   for(i=X_AXIS_STARTX+1; i< (X_AXIS_STARTX + last_data_index+1); i++ )
   {
     float yvalue = (abs(data[i-X_AXIS_STARTX-1]) - abs(graph_max_rssi)) *yscale_factor;
-    Serial.printf("d[%d]=%3d, ", i-X_AXIS_STARTX-1,data[i-X_AXIS_STARTX-1]);
+    // Serial.printf("d[%d]=%3d, ", i-X_AXIS_STARTX-1,data[i-X_AXIS_STARTX-1]);
     // Serial.printf("%4.1f,",yvalue);
     display.drawPixel(i, yvalue, SSD1306_WHITE);
   }
-  Serial.println("\n");
+  //Serial.println("\n");
 
   // Display current RSSI
   sprintf(strRSSI, "%3d", last_rssi);
   strRSSI[3]=0;
-  Serial.printf("strrssi:%s\n",strRSSI);
+  // Serial.printf("strrssi:%s\n",strRSSI);
   display.setTextSize(1);             // Draw 2X-scale text
 
   display.fillRect(0, 56, display.width(), display.height(), SSD1306_BLACK);      // SSD1306_INVERSE
@@ -122,19 +96,19 @@ int RSSIStateObject::updateRSSI()
   int i;
 
   int wifi_status = WiFi.status();
-  Serial.printf("wifistatus=%d\n", wifi_status);
+  // Serial.printf("wifistatus=%d\n", wifi_status);
 
   if ( wifi_status!= WL_CONNECTED)
   {
     error = true;
-    Serial.println("--> Update RSSI - not connected");
+    // Serial.println("--> Update RSSI - not connected");
     return(-1);
   }
   else
     error = false;
   
   last_rssi = WiFi.RSSI();
-  Serial.printf("RSSI: %d\n", last_rssi);
+  // Serial.printf("RSSI: %d\n", last_rssi);
 
   if(last_data_index == (ARR_LEN - 1))
   {
